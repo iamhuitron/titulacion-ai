@@ -345,6 +345,10 @@
         <div class="header-card">
             <h1>Documentos a subir y estatus de titulacion</h1>
             <p>Semaforo de validacion: verde = válido, amarillo = en revisión rojo = inválido</p>
+            <div style="margin-top: 15px; font-size: 14px;">
+                <label for="num_cuenta">Número de cuenta:</label>
+                <input type="number" id="num_cuenta" placeholder="Ingrese su número de cuenta" style="padding: 5px; border-radius: 5px; border: none;">
+            </div>
         </div>
 
         <ul class="status-list">
@@ -695,14 +699,22 @@
             message.className = "upload-message";
             message.textContent = "Ningun archivo se ha subido";
 
-            input.addEventListener("change", function () {
+            input.addEventListener("change", async function () {
                 const file = input.files[0];
+                const num_cuenta = document.getElementById('num_cuenta').value;
 
                 if (!file) {
                     resetLights(card);
                     message.className = "upload-message";
                     message.textContent = "Ningun archivo se ha subido";
                     updateSubmitButton();
+                    return;
+                }
+
+                if (!num_cuenta) {
+                    message.className = "upload-message error";
+                    message.textContent = "❌ Por favor ingrese su número de cuenta primero";
+                    input.value = "";
                     return;
                 }
 
@@ -728,10 +740,50 @@
                     return;
                 }
 
+                // Mostrar mensaje de carga
                 resetLights(card);
                 activateLight(card, "yellow", "En revision");
                 message.className = "upload-message";
-                message.textContent = "Archivo cargado: " + file.name;
+                message.textContent = "⏳ Subiendo archivo...";
+
+                // Preparar datos y subir al backend
+                const formData = new FormData();
+                formData.append('archivo', file);
+
+                // documento_id: usar data-doc-id si existe, si no derivar del h2
+                let documento_id = card.getAttribute('data-doc-id');
+                if (!documento_id) {
+                    documento_id = card.querySelector('h2').innerText.trim().toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '').slice(0,80);
+                }
+                formData.append('documento_id', documento_id);
+                formData.append('num_cuenta', num_cuenta);
+
+                try {
+                    const response = await fetch('../backend/upload.php', { method: 'POST', body: formData });
+                    const result = await response.json();
+
+                    if (result.success) {
+                        card.classList.add('is-active');
+                        activateLight(card, 'green', 'Correcta');
+                        message.className = 'upload-message success';
+                        message.textContent = '✅ ' + (result.message || 'Archivo subido');
+                        if (result.detalles) message.title = JSON.stringify(result.detalles, null, 2);
+                    } else {
+                        input.value = '';
+                        resetLights(card);
+                        activateLight(card, 'red', 'Invalido');
+                        message.className = 'upload-message error';
+                        message.textContent = '❌ Error: ' + (result.message || 'Error al subir');
+                    }
+                } catch (err) {
+                    input.value = '';
+                    resetLights(card);
+                    activateLight(card, 'red', 'Invalido');
+                    message.className = 'upload-message error';
+                    message.textContent = '❌ Error de conexión';
+                    console.error(err);
+                }
+
                 updateSubmitButton();
             });
 

@@ -366,21 +366,31 @@
                         return;
                 }
 
-                // Credenciales de ejemplo (visibles en el cliente)
-                if (matricula === "323332855" && contrasena === "24092007") {
-                        // Cerrar modal antes de redirigir
-                        document.getElementById("overlay").style.display = "none";
-                        const loginCard = document.getElementById("loginCard");
-                        loginCard.style.display = "none";
-                        loginCard.classList.remove("visible");
-                        // Redirigir a la página de destino
-                        window.location.href = "chart.html";
-                        return;
+            // Enviar credenciales al backend
+            fetch('../backend/login.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ matricula: matricula, contrasena: contrasena })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    // Cerrar modal y redirigir
+                    document.getElementById("overlay").style.display = "none";
+                    const loginCard = document.getElementById("loginCard");
+                    loginCard.style.display = "none";
+                    loginCard.classList.remove("visible");
+                    window.location.href = data.redirect || 'chart.html';
+                } else {
+                    errorCard.innerText = data.message || 'Matrícula o contraseña incorrectas';
+                    errorCard.style.display = 'block';
                 }
-
-                // Credenciales inválidas
-                errorCard.innerText = "Matrícula o contraseña incorrectas";
-                errorCard.style.display = "block";
+            })
+            .catch(err => {
+                errorCard.innerText = 'Error de conexión';
+                errorCard.style.display = 'block';
+                console.error(err);
+            });
             }
 </script>
 </body>

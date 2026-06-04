@@ -335,7 +335,7 @@
             formData.append('num_cuenta', num_cuenta);
 
             try {
-                const response = await fetch('upload.php', {
+                const response = await fetch('../backend/upload.php', {
                     method: 'POST',
                     body: formData
                 });
