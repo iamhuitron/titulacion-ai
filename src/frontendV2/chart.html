@@ -106,10 +106,11 @@
             box-sizing: border-box;
             backdrop-filter: blur(10px);
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr auto minmax(180px, 260px);
             align-items: center;
-            justify-content: space-between;
             gap: 18px;
+            position: relative;
         }
 
         .status-card h2 {
@@ -118,14 +119,16 @@
         }
 
         .status-info {
-            flex: 1;
+            min-width: 0;
             text-align: left;
+            overflow-wrap: anywhere;
         }
 
         .traffic-light {
             display: flex;
             gap: 10px;
-            flex-shrink: 0;
+            justify-self: center;
+            align-self: center;
         }
 
         .status-actions {
@@ -288,12 +291,14 @@
 
         @media (max-width: 700px) {
             .status-card {
+                display: flex;
                 flex-direction: column;
                 align-items: flex-start;
             }
 
             .traffic-light {
                 order: -1;
+                justify-self: start;
             }
 
             .status-actions {
@@ -303,6 +308,7 @@
 
             .upload-message {
                 text-align: left;
+                word-break: break-word;
             }
         }
 
