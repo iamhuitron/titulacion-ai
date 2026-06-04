@@ -24,7 +24,8 @@ $dbName = 'alumnos';
 $mysqli = @new mysqli($dbHost, $dbUser, $dbPass, $dbName);
 if ($mysqli->connect_error) {
     // Fallback para pruebas locales si no hay BD disponible
-    if ($matricula === '323332855' && $contrasena === '24092007') {
+    // Acepta la credencial numérica de prueba antigua y también admin/admin para testing rápido
+    if (($matricula === '323332855' && $contrasena === '24092007') || ($matricula === 'admin' && $contrasena === 'admin')) {
         echo json_encode(['success' => true, 'redirect' => '/frontendV2/chart.html']);
         exit;
     }
