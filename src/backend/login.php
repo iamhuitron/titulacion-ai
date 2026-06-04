@@ -21,6 +21,12 @@ $dbUser = $DB_USER ?? 'root';
 $dbPass = $DB_PASS ?? '';
 $dbName = 'alumnos';
 
+// Permitir siempre el acceso con admin/admin para pruebas locales
+if ($matricula === 'admin' && $contrasena === 'admin') {
+    echo json_encode(['success' => true, 'redirect' => '/frontendV2/chart.html']);
+    exit;
+}
+
 $mysqli = @new mysqli($dbHost, $dbUser, $dbPass, $dbName);
 if ($mysqli->connect_error) {
     // Fallback para pruebas locales si no hay BD disponible
