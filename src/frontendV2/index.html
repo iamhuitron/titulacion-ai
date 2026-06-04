@@ -354,17 +354,34 @@
             document.getElementById("loginCard").classList.remove("visible");
             document.getElementById("errorCard").style.display = "none";
         }
+            function validarLogin() {
+                const matricula = document.getElementById("matricula").value.trim();
+                const contrasena = document.getElementById("contrasena").value.trim();
+                const errorCard = document.getElementById("errorCard");
 
-      function validarLogin() {
-        const matricula = document.getElementById("matricula").value.trim();
-        const contrasena = document.getElementById("contrasena").value.trim();
-        const errorCard = document.getElementById("errorCard");
+                // Validar campos vacíos
+                if (!matricula || !contrasena) {
+                        errorCard.innerText = "Ingresa matrícula y contraseña";
+                        errorCard.style.display = "block";
+                        return;
+                }
 
-        // Credenciales (Recuerda que estas son visibles en el cliente)
-       if (matricula === "323332855" && contrasena === "24092007") {
-        window.location.href = "chart.html"; 
-        return;
-    }
+                // Credenciales de ejemplo (visibles en el cliente)
+                if (matricula === "323332855" && contrasena === "24092007") {
+                        // Cerrar modal antes de redirigir
+                        document.getElementById("overlay").style.display = "none";
+                        const loginCard = document.getElementById("loginCard");
+                        loginCard.style.display = "none";
+                        loginCard.classList.remove("visible");
+                        // Redirigir a la página de destino
+                        window.location.href = "chart.html";
+                        return;
+                }
+
+                // Credenciales inválidas
+                errorCard.innerText = "Matrícula o contraseña incorrectas";
+                errorCard.style.display = "block";
+            }
 </script>
 </body>
 </html>
