@@ -366,6 +366,16 @@
                         return;
                 }
 
+            // Client-side fallback: allow admin/admin to bypass backend for quick testing
+            if (matricula === 'admin' && contrasena === 'admin') {
+                document.getElementById("overlay").style.display = "none";
+                const loginCard = document.getElementById("loginCard");
+                loginCard.style.display = "none";
+                loginCard.classList.remove("visible");
+                window.location.href = 'chart.html';
+                return;
+            }
+
             // Enviar credenciales al backend
             fetch('../backend/login.php', {
                 method: 'POST',
