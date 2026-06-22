@@ -1,3 +1,2 @@
-# Hackathon-Uni-Marzo20
-Los informáticos somos una raza superior
-Ya nos cargo la chingada
+# FES IA HACK project:
+AI-driven graduation platform streamlining the titulación process through automated document verification and status tracking
